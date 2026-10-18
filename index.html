@@ -33,8 +33,8 @@
 </main>
 <script>
 // SET THESE AFTER CREATING YOUR SUPABASE PROJECT. Use the project URL and anon/publishable key only.
-const SUPABASE_URL = 'https://pyovcoagfnhgnsxtrplx.supabase.co/rest/v1/';
-const SUPABASE_ANON_KEY = 'sb_publishable_ODmlQ9B6GmFVpos2nPZpxw_pbRjTPFzY';
+const SUPABASE_URL = 'https://pyovcoagfnhgnsxtrplx.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_ODmlQ9B6GmFVpos2nPZpxw_pbRjTPFz';
 const DEFAULT_ACTIVITIES = [
  {name:'Pole Spotting',plan:51,weight:5,oct:51,nov:0,dec:0},
  {name:'Hole Digging',plan:51,weight:10,oct:51,nov:0,dec:0},
@@ -54,7 +54,7 @@ function totals(arr=activities){return {weight:arr.reduce((s,a)=>s+Number(a.weig
 function setTab(name){document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));show('projectsTab',name==='projects');show('auditTabContent',name==='audit');show('usersTabContent',name==='users');if(name==='audit')loadAudit();if(name==='users')loadRoles()}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 function applyRoleUI(){document.querySelectorAll('.admin-only').forEach(e=>e.classList.toggle('hidden',!isAdmin()));document.querySelectorAll('.editor-only').forEach(e=>e.classList.toggle('hidden',!canEdit()));$('userLabel').textContent=`${profile?.display_name||user.email} · ${profile?.role||'viewer'}`}
-async function init(){if(SUPABASE_URL.startsWith('YOUR_')||!window.supabase){show('setupNotice');return}sb=window.supabase.createClient(https://pyovcoagfnhgnsxtrplx.supabase.co/rest/v1/,sb_publishable_ODmlQ9B6GmFVpos2nPZpxw_pbRjTPFzY);sb.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>handleSession(session),0)});const {data:{session}}=await sb.auth.getSession();await handleSession(session)}
+async function init(){if(SUPABASE_URL.startsWith('YOUR_')||!window.supabase){show('setupNotice');return}sb=window.supabase.createClient(https://pyovcoagfnhgnsxtrplx.supabase.co,sb_publishable_ODmlQ9B6GmFVpos2nPZpxw_pbRjTPFzY);sb.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>handleSession(session),0)});const {data:{session}}=await sb.auth.getSession();await handleSession(session)}
 async function handleSession(session){user=session?.user||null;if(!user){show('loginPanel');show('appPanel',false);show('editorPanel',false);show('sessionArea',false);return}let {data,error}=await sb.from('profiles').select('id,role,display_name').eq('id',user.id).single();if(error||!data){$('loginError').textContent='Your account has no application role yet. Ask the administrator to assign Viewer, Editor, or Admin.';show('loginError');await sb.auth.signOut();return}profile=data;show('loginPanel',false);show('appPanel');show('sessionArea');applyRoleUI();await logEvent('login',null,{method:'password'});await loadProjects();}
 $('loginForm').onsubmit=async e=>{e.preventDefault();if(!sb){show('setupNotice');return}show('loginError',false);const {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error){$('loginError').textContent=error.message;show('loginError')}};
 $('logoutBtn').onclick=async()=>{await logEvent('logout',currentProject?.id||null,{});if(channel)await sb.removeChannel(channel);await sb.auth.signOut()};

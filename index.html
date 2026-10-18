@@ -1,40 +1,197 @@
+
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ZANECO | Online SEP Project Monitoring</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{--navy:#003366;--blue:#245bb5;--gold:#f6c900;--ink:#182230;--muted:#637083;--line:#dbe2eb;--bg:#f3f6fa;--green:#15803d}*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.45 "Segoe UI",Arial,sans-serif;color:var(--ink)}header{background:var(--navy);color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:4px solid var(--gold)}header strong{font-size:18px}header small{display:block;color:#dbeafe;margin-top:3px}.wrap{max-width:1440px;margin:24px auto;padding:0 18px}.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 4px 16px #0b2d5010;margin-bottom:18px}.login{max-width:460px;margin:8vh auto}.hidden{display:none!important}h1,h2,h3{margin:0 0 12px;color:var(--navy)}h1{font-size:24px}h2{font-size:18px}p{color:var(--muted)}label{display:block;font-weight:600;margin:10px 0 5px}input,select,textarea{font:inherit;padding:10px 11px;border:1px solid #c7d0dc;border-radius:8px;width:100%;background:white;color:var(--ink)}button,.button{font:600 13px inherit;border:0;border-radius:8px;padding:10px 14px;background:var(--navy);color:white;cursor:pointer;display:inline-block;text-decoration:none}button:hover,.button:hover{filter:brightness(1.12)}button.gold{background:var(--gold);color:var(--navy)}button.light{background:#e8eef7;color:var(--navy)}button.danger{background:#b42318}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.row .fit{flex:0 0 auto}.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.stats{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:12px;margin:16px 0}.stat{padding:16px;border-radius:10px;background:#f6f8fb;border:1px solid var(--line)}.stat span{display:block;color:var(--muted);font-size:12px}.stat strong{display:block;font-size:24px;color:var(--navy);margin-top:4px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tabs button.active{background:var(--gold);color:var(--navy)}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:8px}table{border-collapse:collapse;width:100%;min-width:1080px;background:white}th,td{padding:9px 10px;border:1px solid #d8dee8;text-align:center}th{background:var(--navy);color:white;position:sticky;top:0;z-index:1}td.left{text-align:left}td input{min-width:75px;padding:7px;border-radius:5px}td input.text{min-width:200px}.pill{display:inline-block;border-radius:999px;background:#e9f5ed;color:#166534;padding:4px 9px;font-size:12px}.notice{padding:12px 14px;background:#fff8db;border:1px solid #f3df8a;border-radius:8px;color:#674e00;margin:12px 0}.status{font-size:12px;color:var(--muted)}.bar{height:8px;background:#e4eaf1;border-radius:99px;overflow:hidden}.bar span{height:100%;display:block;background:var(--green)}.small{font-size:12px;color:var(--muted)}.activity-list{max-height:500px;overflow:auto}.activity-item{padding:12px 0;border-bottom:1px solid var(--line)}.activity-item:last-child{border:0}.footer{font-size:12px;text-align:center;color:var(--muted);padding:24px}@media(max-width:800px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding:0 10px}.panel{padding:14px}header{padding:15px}}
+:root{--navy:#003366;--blue:#245bb5;--gold:#f6c900;--ink:#182230;--muted:#637083;--line:#dbe2eb;--bg:#f3f6fa;--green:#15803d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font:14px/1.45 "Segoe UI",Arial,sans-serif;color:var(--ink)}
+header{background:var(--navy);color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:4px solid var(--gold)}
+header strong{font-size:18px}
+header small{display:block;color:#dbeafe;margin-top:3px}
+.wrap{max-width:1440px;margin:24px auto;padding:0 18px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 4px 16px #0b2d5010;margin-bottom:18px}
+.login{max-width:460px;margin:8vh auto}
+.hidden{display:none!important}
+h1,h2,h3{margin:0 0 12px;color:var(--navy)}
+h1{font-size:24px}h2{font-size:18px}
+p{color:var(--muted)}
+label{display:block;font-weight:600;margin:10px 0 5px}
+input,select,textarea{font:inherit;padding:10px 11px;border:1px solid #c7d0dc;border-radius:8px;width:100%;background:white;color:var(--ink)}
+button,.button{font:600 13px "Segoe UI",Arial,sans-serif;border:0;border-radius:8px;padding:10px 14px;background:var(--navy);color:white;cursor:pointer;display:inline-block;text-decoration:none}
+button:hover,.button:hover{filter:brightness(1.12)}
+button.gold{background:var(--gold);color:var(--navy)}
+button.light{background:#e8eef7;color:var(--navy)}
+button.danger{background:#b42318}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+.row .fit{flex:0 0 auto}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:12px;margin:16px 0}
+.stat{padding:16px;border-radius:10px;background:#f6f8fb;border:1px solid var(--line)}
+.stat span{display:block;color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:24px;color:var(--navy);margin-top:4px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button.active{background:var(--gold);color:var(--navy)}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:1080px;background:white}
+th,td{padding:9px 10px;border:1px solid #d8dee8;text-align:center}
+th{background:var(--navy);color:white;position:sticky;top:0;z-index:1}
+td.left{text-align:left}
+td input{min-width:75px;padding:7px;border-radius:5px}
+td input.text{min-width:200px}
+.pill{display:inline-block;border-radius:999px;background:#e9f5ed;color:#166534;padding:4px 9px;font-size:12px}
+.notice{padding:12px 14px;background:#fff8db;border:1px solid #f3df8a;border-radius:8px;color:#674e00;margin:12px 0}
+.status{font-size:12px;color:var(--muted)}
+.bar{height:8px;background:#e4eaf1;border-radius:99px;overflow:hidden}
+.bar span{height:100%;display:block;background:var(--green)}
+.small{font-size:12px;color:var(--muted)}
+.activity-list{max-height:500px;overflow:auto}
+.activity-item{padding:12px 0;border-bottom:1px solid var(--line)}
+.activity-item:last-child{border:0}
+.footer{font-size:12px;text-align:center;color:var(--muted);padding:24px}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding:0 10px}.panel{padding:14px}header{padding:15px}}
 </style>
 </head>
 <body>
-<header><div><strong>⚡ ZANECO | Online SEP Project Monitoring</strong><small>Technical Services Department · Planning and Design Section</small></div><div id="sessionArea" class="row hidden" style="flex:0 1 auto"><span id="userLabel"></span><button class="light" id="logoutBtn">Log out</button></div></header>
+<header>
+  <div>
+    <strong>⚡ ZANECO | Online SEP Project Monitoring</strong>
+    <small>Technical Services Department · Planning and Design Section</small>
+  </div>
+  <div id="sessionArea" class="row hidden" style="flex:0 1 auto">
+    <span id="userLabel"></span>
+    <button class="light" id="logoutBtn">Log out</button>
+  </div>
+</header>
+
 <main class="wrap">
-<section id="setupNotice" class="panel hidden"><h2>Database setup required</h2><p>Enter your Supabase project URL and public anon/publishable key in the setup section of this file, then run <code>supabase_schema.sql</code> in your Supabase SQL Editor. Do not put a service-role key in this website.</p></section>
-<section id="loginPanel" class="panel login"><h1>Sign in</h1><p>Use your individually registered account. Access is managed by the system administrator.</p><form id="loginForm"><label>Email address</label><input id="email" type="email" required autocomplete="username" placeholder="name@zaneco.com.ph"><label>Password</label><input id="password" type="password" required autocomplete="current-password"><button class="gold" style="width:100%;margin-top:14px">Sign in</button></form><div id="loginError" class="notice hidden"></div><p class="small">New users must be invited/created by the administrator in the authentication console.</p></section>
+<section id="setupNotice" class="panel hidden">
+  <h2>Database setup required</h2>
+  <p>Check your Supabase project URL and publishable key, and run your database setup SQL in the Supabase SQL Editor. Never put a service-role key in this website.</p>
+</section>
+
+<section id="loginPanel" class="panel login">
+  <h1>Sign in</h1>
+  <p>Use your individually registered account. Access is managed by the system administrator.</p>
+  <form id="loginForm">
+    <label>Email address</label>
+    <input id="email" type="email" required autocomplete="username" placeholder="name@zaneco.com.ph">
+    <label>Password</label>
+    <input id="password" type="password" required autocomplete="current-password">
+    <button class="gold" style="width:100%;margin-top:14px">Sign in</button>
+  </form>
+  <div id="loginError" class="notice hidden"></div>
+  <p class="small">New users must be invited/created by the administrator in the authentication console.</p>
+</section>
+
 <section id="appPanel" class="hidden">
-<div class="panel"><div class="topline"><div><h1>Project dashboard</h1><p style="margin:0">Master overview of SEP project accomplishments and individual project sheets.</p></div><div class="row" style="flex:0 1 auto"><button id="refreshBtn" class="light">↻ Refresh</button><button id="newProjectBtn" class="gold editor-only">＋ New project</button></div></div>
-<div class="stats"><div class="stat"><span>Projects</span><strong id="statProjects">0</strong></div><div class="stat"><span>Average accomplishment</span><strong id="statAverage">0.00%</strong></div><div class="stat"><span>Completed activities</span><strong id="statComplete">0</strong></div><div class="stat"><span>Last refreshed</span><strong id="statUpdated" style="font-size:15px">—</strong></div></div>
-<div class="tabs"><button class="active" data-tab="projects">Project sheets</button><button data-tab="audit" id="auditTab" class="admin-only">Admin activity log</button><button data-tab="users" id="usersTab" class="admin-only">User roles</button></div>
-<div id="projectsTab"><div class="row"><div><label for="searchProject">Search projects</label><input id="searchProject" placeholder="Project name, sitio, barangay, municipality"></div><div><label for="statusFilter">Status</label><select id="statusFilter"><option value="all">All projects</option><option value="active">In progress</option><option value="complete">100% accomplished</option></select></div></div><div class="tablewrap" style="margin-top:14px"><table style="min-width:850px"><thead><tr><th>Project / Location</th><th>Fund source</th><th>Reporting date</th><th>Activities</th><th>Accomplishment</th><th>Updated by</th><th>Open</th></tr></thead><tbody id="projectsBody"></tbody></table></div></div>
-<div id="auditTabContent" class="hidden"><div class="topline"><div><h2>Activity log</h2><p>Project edits are recorded by database triggers. View/login/download events are recorded by the client when configured and cannot prove a person actually read every item on screen.</p></div><button id="exportAuditBtn" class="light">Download log CSV</button></div><div id="auditList" class="activity-list"></div></div>
-<div id="usersTabContent" class="hidden"><h2>Assign account roles</h2><p>Only the admin can assign application roles. Create the account in Supabase Authentication first, then enter its exact email below.</p><form id="roleForm" class="row"><div><label>Email address</label><input id="roleEmail" type="email" required></div><div><label>Role</label><select id="roleValue"><option value="viewer">Viewer — read-only</option><option value="editor">Editor — update project sheets</option><option value="admin">Admin — manage users and audit</option></select></div><div class="fit" style="align-self:end"><button class="gold">Save role</button></div></form><div id="roleMessage" class="small"></div><div class="tablewrap" style="margin-top:14px"><table style="min-width:550px"><thead><tr><th>User ID</th><th>Role</th><th>Updated</th></tr></thead><tbody id="rolesBody"></tbody></table></div></div>
+<div class="panel">
+  <div class="topline">
+    <div>
+      <h1>Project dashboard</h1>
+      <p style="margin:0">Master overview of SEP project accomplishments and individual project sheets.</p>
+    </div>
+    <div class="row" style="flex:0 1 auto">
+      <button id="refreshBtn" class="light">↻ Refresh</button>
+      <button id="newProjectBtn" class="gold editor-only">＋ New project</button>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span>Projects</span><strong id="statProjects">0</strong></div>
+    <div class="stat"><span>Average accomplishment</span><strong id="statAverage">0.00%</strong></div>
+    <div class="stat"><span>Completed activities</span><strong id="statComplete">0</strong></div>
+    <div class="stat"><span>Last refreshed</span><strong id="statUpdated" style="font-size:15px">—</strong></div>
+  </div>
+  <div class="tabs">
+    <button class="active" data-tab="projects">Project sheets</button>
+    <button data-tab="audit" id="auditTab" class="admin-only">Admin activity log</button>
+    <button data-tab="users" id="usersTab" class="admin-only">User roles</button>
+  </div>
+  <div id="projectsTab">
+    <div class="row">
+      <div><label for="searchProject">Search projects</label><input id="searchProject" placeholder="Project name, sitio, barangay, municipality"></div>
+      <div><label for="statusFilter">Status</label><select id="statusFilter"><option value="all">All projects</option><option value="active">In progress</option><option value="complete">100% accomplished</option></select></div>
+    </div>
+    <div class="tablewrap" style="margin-top:14px">
+      <table style="min-width:850px">
+        <thead><tr><th>Project / Location</th><th>Fund source</th><th>Reporting date</th><th>Activities</th><th>Accomplishment</th><th>Updated by</th><th>Open</th></tr></thead>
+        <tbody id="projectsBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="auditTabContent" class="hidden">
+    <div class="topline">
+      <div><h2>Activity log</h2><p>Project edits are recorded by database triggers. View/login/download events are recorded by the client when configured and cannot prove a person actually read every item on screen.</p></div>
+      <button id="exportAuditBtn" class="light">Download log CSV</button>
+    </div>
+    <div id="auditList" class="activity-list"></div>
+  </div>
+  <div id="usersTabContent" class="hidden">
+    <h2>Assign account roles</h2>
+    <p>Only the admin can assign application roles. Create the account in Supabase Authentication first, then enter its exact email below.</p>
+    <form id="roleForm" class="row">
+      <div><label>Email address</label><input id="roleEmail" type="email" required></div>
+      <div><label>Role</label><select id="roleValue"><option value="viewer">Viewer — read-only</option><option value="editor">Editor — update project sheets</option><option value="admin">Admin — manage users and audit</option></select></div>
+      <div class="fit" style="align-self:end"><button class="gold">Save role</button></div>
+    </form>
+    <div id="roleMessage" class="small"></div>
+    <div class="tablewrap" style="margin-top:14px">
+      <table style="min-width:550px">
+        <thead><tr><th>User ID</th><th>Role</th><th>Updated</th></tr></thead>
+        <tbody id="rolesBody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<div id="editorPanel" class="panel hidden"><div class="topline"><div><h1 id="editorTitle">Project sheet</h1><p id="editorSub" style="margin:0">Activity quantities and weighted accomplishments</p></div><div class="row" style="flex:0 1 auto"><button id="backBtn" class="light">← Dashboard</button><button id="exportXlsxBtn" class="light">Download Excel</button><button id="saveBtn" class="gold editor-only">Save changes</button></div></div>
-<div class="row" style="margin-top:12px"><div><label>Project / location</label><input id="projectName" placeholder="e.g., PRK. LUBI, SINUNOC, DAPITAN CITY"></div><div><label>Fund source</label><input id="fundSource" value="GAA 2026 - SEP"></div><div><label>Reporting date</label><input id="reportDate" type="date"></div></div>
-<div class="stats"><div class="stat"><span>Total weighted accomplishment</span><strong id="projectTotal">0.00%</strong></div><div class="stat"><span>Activities at 100%</span><strong id="projectDone">0 / 9</strong></div><div class="stat"><span>Last edited</span><strong id="projectLastEdit" style="font-size:14px">—</strong></div><div class="stat"><span>Presence / updates</span><strong id="liveStatus" style="font-size:14px">Connecting…</strong></div></div>
-<div class="notice">Enter planned quantities, activity weights, and monthly accomplished quantities. Accomplishment % and weighted % are calculated automatically. Activity weights should total 100% for a correctly weighted report.</div>
-<div class="tablewrap"><table id="monitorTable"><thead><tr><th>Item No.</th><th>Activity</th><th>As Plan (Updated Quantity)</th><th>Weight (%)</th><th>October</th><th>November</th><th>December</th><th>To Date</th><th>Accomplishment (%)</th><th>Weighted (%)</th></tr></thead><tbody id="monitorBody"></tbody><tfoot><tr><th colspan="3" class="left">Total</th><th id="weightTotal">100.00%</th><th colspan="3">Monthly quantities</th><th id="qtyTotal">0</th><th>—</th><th id="weightedTotal">0.00%</th></tr></tfoot></table></div><div class="row" style="margin-top:12px"><div><label>Notes / remarks</label><textarea id="projectNotes" rows="2" placeholder="Optional remarks"></textarea></div><div><label>Record status</label><div id="saveStatus" class="notice">No unsaved changes.</div></div></div>
+
+<div id="editorPanel" class="panel hidden">
+  <div class="topline">
+    <div><h1 id="editorTitle">Project sheet</h1><p id="editorSub" style="margin:0">Activity quantities and weighted accomplishments</p></div>
+    <div class="row" style="flex:0 1 auto">
+      <button id="backBtn" class="light">← Dashboard</button>
+      <button id="exportXlsxBtn" class="light">Download Excel</button>
+      <button id="saveBtn" class="gold editor-only">Save changes</button>
+    </div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <div><label>Project / location</label><input id="projectName" placeholder="e.g., PRK. LUBI, SINUNOC, DAPITAN CITY"></div>
+    <div><label>Fund source</label><input id="fundSource" value="GAA 2026 - SEP"></div>
+    <div><label>Reporting date</label><input id="reportDate" type="date"></div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span>Total weighted accomplishment</span><strong id="projectTotal">0.00%</strong></div>
+    <div class="stat"><span>Activities at 100%</span><strong id="projectDone">0 / 9</strong></div>
+    <div class="stat"><span>Last edited</span><strong id="projectLastEdit" style="font-size:14px">—</strong></div>
+    <div class="stat"><span>Presence / updates</span><strong id="liveStatus" style="font-size:14px">Connecting…</strong></div>
+  </div>
+  <div class="notice">Enter planned quantities, activity weights, and monthly accomplished quantities. Accomplishment % and weighted % are calculated automatically. Activity weights should total 100% for a correctly weighted report.</div>
+  <div class="tablewrap">
+    <table id="monitorTable">
+      <thead><tr><th>Item No.</th><th>Activity</th><th>As Plan (Updated Quantity)</th><th>Weight (%)</th><th>October</th><th>November</th><th>December</th><th>To Date</th><th>Accomplishment (%)</th><th>Weighted (%)</th></tr></thead>
+      <tbody id="monitorBody"></tbody>
+      <tfoot><tr><th colspan="3" class="left">Total</th><th id="weightTotal">100.00%</th><th colspan="3">Monthly quantities</th><th id="qtyTotal">0</th><th>—</th><th id="weightedTotal">0.00%</th></tr></tfoot>
+    </table>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <div><label>Notes / remarks</label><textarea id="projectNotes" rows="2" placeholder="Optional remarks"></textarea></div>
+    <div><label>Record status</label><div id="saveStatus" class="notice">No unsaved changes.</div></div>
+  </div>
 </div>
 </section>
 <div class="footer">ZANECO Online SEP Project Monitoring · Prototype prepared from the supplied accomplishment report format.</div>
 </main>
+
 <script>
-// SET THESE AFTER CREATING YOUR SUPABASE PROJECT. Use the project URL and anon/publishable key only.
+// Supabase project configuration
 const SUPABASE_URL = 'https://pyovcoagfnhgnsxtrplx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_ODmlQ9B6GmFVpos2nPZpxw_pbRjTPFz';
+
 const DEFAULT_ACTIVITIES = [
  {name:'Pole Spotting',plan:51,weight:5,oct:51,nov:0,dec:0},
  {name:'Hole Digging',plan:51,weight:10,oct:51,nov:0,dec:0},
@@ -46,33 +203,459 @@ const DEFAULT_ACTIVITIES = [
  {name:'Conductoring',plan:50,weight:25,oct:0,nov:0,dec:0},
  {name:'Grounding',plan:51,weight:5,oct:30,nov:0,dec:0}
 ];
+
 let sb=null,user=null,profile=null,projects=[],currentProject=null,activities=[],dirty=false,channel=null;
-const $=id=>document.getElementById(id); const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const isAdmin=()=>profile?.role==='admin',canEdit=()=>['admin','editor'].includes(profile?.role);
-function show(id,on=true){$(id).classList.toggle('hidden',!on)}function fmt(n){return `${Number(n||0).toFixed(2)}%`}function totalActivity(a){return Number(a.oct||0)+Number(a.nov||0)+Number(a.dec||0)}function pct(a){return Number(a.plan)>0?Math.min(100,totalActivity(a)/Number(a.plan)*100):0}function weighted(a){return pct(a)*Number(a.weight||0)/100}
-function totals(arr=activities){return {weight:arr.reduce((s,a)=>s+Number(a.weight||0),0),weighted:arr.reduce((s,a)=>s+weighted(a),0),done:arr.filter(a=>pct(a)>=99.999).length,qty:arr.reduce((s,a)=>s+totalActivity(a),0)}}
-function setTab(name){document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));show('projectsTab',name==='projects');show('auditTabContent',name==='audit');show('usersTabContent',name==='users');if(name==='audit')loadAudit();if(name==='users')loadRoles()}
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isAdmin=()=>profile?.role==='admin';
+const canEdit=()=>['admin','editor'].includes(profile?.role);
+
+function show(id,on=true){$(id).classList.toggle('hidden',!on)}
+function fmt(n){return `${Number(n||0).toFixed(2)}%`}
+function totalActivity(a){return Number(a.oct||0)+Number(a.nov||0)+Number(a.dec||0)}
+function pct(a){return Number(a.plan)>0?Math.min(100,totalActivity(a)/Number(a.plan)*100):0}
+function weighted(a){return pct(a)*Number(a.weight||0)/100}
+function totals(arr=activities){
+  return {
+    weight:arr.reduce((s,a)=>s+Number(a.weight||0),0),
+    weighted:arr.reduce((s,a)=>s+weighted(a),0),
+    done:arr.filter(a=>pct(a)>=99.999).length,
+    qty:arr.reduce((s,a)=>s+totalActivity(a),0)
+  };
+}
+
+function setTab(name){
+  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+  show('projectsTab',name==='projects');
+  show('auditTabContent',name==='audit');
+  show('usersTabContent',name==='users');
+  if(name==='audit')loadAudit();
+  if(name==='users')loadRoles();
+}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
-function applyRoleUI(){document.querySelectorAll('.admin-only').forEach(e=>e.classList.toggle('hidden',!isAdmin()));document.querySelectorAll('.editor-only').forEach(e=>e.classList.toggle('hidden',!canEdit()));$('userLabel').textContent=`${profile?.display_name||user.email} · ${profile?.role||'viewer'}`}
-async function init(){if(SUPABASE_URL.startsWith('YOUR_')||!window.supabase){show('setupNotice');return}sb=window.supabase.createClient(https://pyovcoagfnhgnsxtrplx.supabase.co,sb_publishable_ODmlQ9B6GmFVpos2nPZpxw_pbRjTPFzY);sb.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>handleSession(session),0)});const {data:{session}}=await sb.auth.getSession();await handleSession(session)}
-async function handleSession(session){user=session?.user||null;if(!user){show('loginPanel');show('appPanel',false);show('editorPanel',false);show('sessionArea',false);return}let {data,error}=await sb.from('profiles').select('id,role,display_name').eq('id',user.id).single();if(error||!data){$('loginError').textContent='Your account has no application role yet. Ask the administrator to assign Viewer, Editor, or Admin.';show('loginError');await sb.auth.signOut();return}profile=data;show('loginPanel',false);show('appPanel');show('sessionArea');applyRoleUI();await logEvent('login',null,{method:'password'});await loadProjects();}
-$('loginForm').onsubmit=async e=>{e.preventDefault();if(!sb){show('setupNotice');return}show('loginError',false);const {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error){$('loginError').textContent=error.message;show('loginError')}};
-$('logoutBtn').onclick=async()=>{await logEvent('logout',currentProject?.id||null,{});if(channel)await sb.removeChannel(channel);await sb.auth.signOut()};
-async function logEvent(action,projectId,details={}){if(!sb||!user)return;try{await sb.from('activity_events').insert({actor_id:user.id,action,project_id:projectId,details})}catch(e){console.warn('Activity event not recorded',e)}}
-async function loadProjects(){const {data,error}=await sb.from('projects').select('*,project_activities(id,activity_name,planned_quantity,weight_percent,october_qty,november_qty,december_qty)').order('updated_at',{ascending:false});if(error){alert('Could not load projects: '+error.message);return}projects=data||[];renderProjects();$('statProjects').textContent=projects.length;$('statAverage').textContent=fmt(projects.length?projects.reduce((s,p)=>s+Number(p.total_weighted||0),0)/projects.length:0);$('statComplete').textContent=projects.reduce((s,p)=>s+(p.project_activities||[]).filter(a=>Number(a.planned_quantity)>0&&((Number(a.october_qty)+Number(a.november_qty)+Number(a.december_qty))/Number(a.planned_quantity)>=.99999)).length,0);$('statUpdated').textContent=new Date().toLocaleTimeString();}
-function renderProjects(){const q=$('searchProject').value.toLowerCase(),filter=$('statusFilter').value;let list=projects.filter(p=>(`${p.name} ${p.fund_source||''}`.toLowerCase().includes(q))&&(filter==='all'||(filter==='complete'?Number(p.total_weighted)>=99.999:Number(p.total_weighted)<99.999)));$('projectsBody').innerHTML=list.map(p=>{const a=p.project_activities||[],v=a.length? a.reduce((s,x)=>s+(Number(x.planned_quantity)>0?Math.min(100,(Number(x.october_qty)+Number(x.november_qty)+Number(x.december_qty))/Number(x.planned_quantity)*100)*Number(x.weight_percent)/100:0),0):Number(p.total_weighted||0);return `<tr><td class="left"><b>${esc(p.name)}</b><br><span class="small">${esc(p.notes||'')}</span></td><td>${esc(p.fund_source||'—')}</td><td>${esc(p.reporting_date||'—')}</td><td>${a.length}</td><td><b>${fmt(v)}</b><div class="bar"><span style="width:${Math.max(0,Math.min(100,v))}%"></span></div></td><td>${esc(p.updated_by_name||'—')}</td><td><button class="light" onclick="openProject('${p.id}')">Open sheet</button></td></tr>`}).join('')||'<tr><td colspan="7">No projects found.</td></tr>'}
-$('searchProject').oninput=renderProjects;$('statusFilter').onchange=renderProjects;$('refreshBtn').onclick=loadProjects;
-$('newProjectBtn').onclick=async()=>{const name=prompt('Enter project/site name:');if(!name?.trim())return;const {data,error}=await sb.from('projects').insert({name:name.trim(),fund_source:'GAA 2026 - SEP',reporting_date:new Date().toISOString().slice(0,10),notes:'',created_by:user.id,updated_by_name:profile.display_name||user.email}).select().single();if(error){alert(error.message);return}const rows=DEFAULT_ACTIVITIES.map((a,i)=>({project_id:data.id,sort_order:i+1,activity_name:a.name,planned_quantity:a.plan,weight_percent:a.weight,october_qty:a.oct,november_qty:a.nov,december_qty:a.dec}));const r=await sb.from('project_activities').insert(rows);if(r.error){alert('Project created but activities failed: '+r.error.message);return}await logEvent('project_created',data.id,{name});await loadProjects();openProject(data.id)};
-window.openProject=async id=>{if(dirty&&!confirm('Discard unsaved changes and open another project?'))return;const {data,error}=await sb.from('projects').select('*,project_activities(*)').eq('id',id).single();if(error){alert(error.message);return}currentProject=data;activities=(data.project_activities||[]).sort((a,b)=>a.sort_order-b.sort_order).map(a=>({id:a.id,name:a.activity_name,plan:Number(a.planned_quantity),weight:Number(a.weight_percent),oct:Number(a.october_qty),nov:Number(a.november_qty),dec:Number(a.december_qty)}));$('editorTitle').textContent=data.name;$('editorSub').textContent=`Fund source: ${data.fund_source||'—'} · Reporting date: ${data.reporting_date||'—'}`;$('projectName').value=data.name;$('fundSource').value=data.fund_source||'';$('reportDate').value=data.reporting_date||'';$('projectNotes').value=data.notes||'';$('projectLastEdit').textContent=data.updated_at?new Date(data.updated_at).toLocaleString():'—';dirty=false;show('appPanel',false);show('editorPanel');renderMonitor();$('liveStatus').textContent='Connecting…';await logEvent('project_viewed',id,{});subscribeProject(id)};
-function subscribeProject(id){if(channel)sb.removeChannel(channel);channel=sb.channel('project-'+id).on('postgres_changes',{event:'*',schema:'public',table:'project_activities',filter:`project_id=eq.${id}`},async payload=>{if(dirty){$('liveStatus').textContent='Remote update (local edits pending)';return}const {data}=await sb.from('project_activities').select('*').eq('project_id',id).order('sort_order');if(data){activities=data.map(a=>({id:a.id,name:a.activity_name,plan:Number(a.planned_quantity),weight:Number(a.weight_percent),oct:Number(a.october_qty),nov:Number(a.november_qty),dec:Number(a.december_qty)}));renderMonitor();$('liveStatus').textContent='Live · synced'}}).subscribe(status=>{if(status==='SUBSCRIBED')$('liveStatus').textContent='Live · connected'})}
-$('backBtn').onclick=async()=>{if(dirty&&!confirm('You have unsaved changes. Leave without saving?'))return;dirty=false;if(channel){await sb.removeChannel(channel);channel=null}show('editorPanel',false);show('appPanel');await loadProjects()};
-function renderMonitor(){const editable=canEdit();$('monitorBody').innerHTML=activities.map((a,i)=>`<tr><td>${i+1}</td><td class="left">${editable?`<input class="text" data-i="${i}" data-k="name" value="${esc(a.name)}">`:esc(a.name)}</td><td><input data-i="${i}" data-k="plan" type="number" min="0" step="any" value="${a.plan}" ${editable?'':'disabled'}></td><td><input data-i="${i}" data-k="weight" type="number" min="0" max="100" step="any" value="${a.weight}" ${editable?'':'disabled'}></td><td><input data-i="${i}" data-k="oct" type="number" min="0" step="any" value="${a.oct}" ${editable?'':'disabled'}></td><td><input data-i="${i}" data-k="nov" type="number" min="0" step="any" value="${a.nov}" ${editable?'':'disabled'}></td><td><input data-i="${i}" data-k="dec" type="number" min="0" step="any" value="${a.dec}" ${editable?'':'disabled'}></td><td>${totalActivity(a)}</td><td>${fmt(pct(a))}</td><td>${fmt(weighted(a))}</td></tr>`).join('');$('monitorBody').querySelectorAll('input').forEach(el=>el.onchange=()=>{const a=activities[Number(el.dataset.i)],k=el.dataset.k;a[k]=k==='name'?el.value:Math.max(0,Number(el.value)||0);dirty=true;$('saveStatus').textContent='Unsaved changes';renderMonitor()});const t=totals();$('weightTotal').textContent=fmt(t.weight);$('qtyTotal').textContent=t.qty;$('weightedTotal').textContent=fmt(t.weighted);$('projectTotal').textContent=fmt(t.weighted);$('projectDone').textContent=`${t.done} / ${activities.length}`;$('saveBtn').disabled=!editable}
-$('saveBtn').onclick=async()=>{if(!canEdit()||!currentProject)return;const weight=totals().weight;if(Math.abs(weight-100)>0.01&&!confirm(`Activity weights total ${weight.toFixed(2)}%, not 100%. Save anyway?`))return;const {error:pe}=await sb.from('projects').update({name:$('projectName').value.trim(),fund_source:$('fundSource').value.trim(),reporting_date:$('reportDate').value||null,notes:$('projectNotes').value,updated_by_name:profile.display_name||user.email}).eq('id',currentProject.id);if(pe){alert('Project metadata save failed: '+pe.message);return}for(const a of activities){const {error}=await sb.from('project_activities').update({activity_name:a.name,planned_quantity:a.plan,weight_percent:a.weight,october_qty:a.oct,november_qty:a.november_qty??a.nov,december_qty:a.dec}).eq('id',a.id);if(error){alert('Activity save failed: '+error.message);return}}await logEvent('project_saved',currentProject.id,{project_name:$('projectName').value,activity_count:activities.length});dirty=false;$('saveStatus').textContent='Saved successfully at '+new Date().toLocaleTimeString();await loadProjects();$('projectLastEdit').textContent=new Date().toLocaleString()};
-$('exportXlsxBtn').onclick=()=>{if(!window.XLSX){alert('Excel library unavailable');return}const rows=[['ZAMBOANGA DEL NORTE ELECTRIC COOPERATIVE, INC.'],['SEP Accomplishment Report'],['Distribution Lines'],['Fund Source', $('fundSource').value],['Project', $('projectName').value],['As of', $('reportDate').value],[],['Item Number','Activity','As Plan (Updated Quantity)','Weight per Activity','October','November','December','To Date','Accomplishment per activity (%)','Weighted percent'],...activities.map((a,i)=>[i+1,a.name,a.plan,a.weight/100,a.oct,a.nov,a.dec,totalActivity(a),pct(a)/100,weighted(a)/100]),['','','','', '', '', '','','% Total Accomplished',totals().weighted/100]];const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:32},{wch:22},{wch:18},{wch:12},{wch:12},{wch:12},{wch:12},{wch:24},{wch:16}];activities.forEach((a,i)=>{const r=11+i;if(ws['D'+r])ws['D'+r].z='0%';if(ws['I'+r])ws['I'+r].z='0.00%';if(ws['J'+r])ws['J'+r].z='0.00%'});const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'SEP Monitoring');XLSX.writeFile(wb,`ZANECO_SEP_${($('projectName').value||'Project').replace(/[^a-z0-9]+/gi,'_')}_${$('reportDate').value||'report'}.xlsx`);logEvent('report_downloaded',currentProject?.id,{format:'xlsx'})};
-async function loadAudit(){if(!isAdmin())return;const {data,error}=await sb.from('activity_events').select('id,action,project_id,actor_id,details,created_at,profiles:actor_id(display_name,email)').order('created_at',{ascending:false}).limit(300);if(error){$('auditList').textContent='Could not load audit log: '+error.message;return}$('auditList').innerHTML=(data||[]).map(e=>`<div class="activity-item"><b>${esc(e.action)}</b> · ${esc(e.profiles?.display_name||e.profiles?.email||e.actor_id)}<div class="small">${new Date(e.created_at).toLocaleString()} · Project ${esc(e.project_id||'—')} · ${esc(JSON.stringify(e.details||{}))}</div></div>`).join('')||'No events recorded yet.'}
-$('exportAuditBtn').onclick=async()=>{const {data,error}=await sb.from('activity_events').select('*').order('created_at',{ascending:false}).limit(5000);if(error){alert(error.message);return}const csv=['created_at,actor_id,action,project_id,details',...(data||[]).map(e=>[e.created_at,e.actor_id,e.action,e.project_id,JSON.stringify(e.details||{})].map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(','))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='ZANECO_activity_log.csv';a.click();logEvent('audit_downloaded',null,{format:'csv'})};
-async function loadRoles(){if(!isAdmin())return;const {data,error}=await sb.from('profiles').select('id,role,updated_at').order('updated_at',{ascending:false});if(error){$('rolesBody').innerHTML=`<tr><td colspan="3">${esc(error.message)}</td></tr>`;return}$('rolesBody').innerHTML=(data||[]).map(p=>`<tr><td>${esc(p.id)}</td><td>${esc(p.role)}</td><td>${p.updated_at?new Date(p.updated_at).toLocaleString():'—'}</td></tr>`).join('')}
-$('roleForm').onsubmit=async e=>{e.preventDefault();if(!isAdmin())return;const email=$('roleEmail').value.trim().toLowerCase(),role=$('roleValue').value;const {data,error}=await sb.rpc('admin_set_role_by_email',{target_email:email,new_role:role});$('roleMessage').textContent=error?'Error: '+error.message:(data||'Role updated.');if(!error){await loadRoles();await logEvent('role_changed',null,{email,role})}};
-window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});init();
+
+function applyRoleUI(){
+  document.querySelectorAll('.admin-only').forEach(e=>e.classList.toggle('hidden',!isAdmin()));
+  document.querySelectorAll('.editor-only').forEach(e=>e.classList.toggle('hidden',!canEdit()));
+  $('userLabel').textContent=`${profile?.display_name||user.email} · ${profile?.role||'viewer'}`;
+}
+
+// FIXED: use the configured variables, not unquoted URL/key text.
+async function init(){
+  if(!SUPABASE_URL || SUPABASE_URL.startsWith('YOUR_') || !window.supabase){
+    show('setupNotice');
+    return;
+  }
+
+  sb=window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  sb.auth.onAuthStateChange((_event,session)=>{
+    setTimeout(()=>handleSession(session),0);
+  });
+
+  const {data,error}=await sb.auth.getSession();
+
+  if(error){
+    console.error('Supabase session error:',error.message);
+    return;
+  }
+
+  await handleSession(data.session);
+}
+
+async function handleSession(session){
+  user=session?.user||null;
+
+  if(!user){
+    show('loginPanel');
+    show('appPanel',false);
+    show('editorPanel',false);
+    show('sessionArea',false);
+    return;
+  }
+
+  const {data,error}=await sb.from('profiles')
+    .select('id,role,display_name')
+    .eq('id',user.id)
+    .single();
+
+  if(error||!data){
+    $('loginError').textContent='Your account has no application role yet. Ask the administrator to assign Viewer, Editor, or Admin.';
+    show('loginError');
+    await sb.auth.signOut();
+    return;
+  }
+
+  profile=data;
+  show('loginPanel',false);
+  show('appPanel');
+  show('sessionArea');
+  applyRoleUI();
+  await logEvent('login',null,{method:'password'});
+  await loadProjects();
+}
+
+$('loginForm').onsubmit=async e=>{
+  e.preventDefault();
+  if(!sb){show('setupNotice');return}
+  show('loginError',false);
+
+  const {error}=await sb.auth.signInWithPassword({
+    email:$('email').value.trim(),
+    password:$('password').value
+  });
+
+  if(error){
+    $('loginError').textContent=error.message;
+    show('loginError');
+  }
+};
+
+$('logoutBtn').onclick=async()=>{
+  await logEvent('logout',currentProject?.id||null,{});
+  if(channel)await sb.removeChannel(channel);
+  await sb.auth.signOut();
+};
+
+async function logEvent(action,projectId,details={}){
+  if(!sb||!user)return;
+  try{
+    const {error}=await sb.from('activity_events').insert({
+      actor_id:user.id,action,project_id:projectId,details
+    });
+    if(error)console.warn('Activity event not recorded',error.message);
+  }catch(e){
+    console.warn('Activity event not recorded',e);
+  }
+}
+
+async function loadProjects(){
+  const {data,error}=await sb.from('projects')
+    .select('*,project_activities(id,activity_name,planned_quantity,weight_percent,october_qty,november_qty,december_qty)')
+    .order('updated_at',{ascending:false});
+
+  if(error){alert('Could not load projects: '+error.message);return}
+
+  projects=data||[];
+  renderProjects();
+
+  $('statProjects').textContent=projects.length;
+  $('statAverage').textContent=fmt(projects.length?projects.reduce((s,p)=>s+Number(p.total_weighted||0),0)/projects.length:0);
+  $('statComplete').textContent=projects.reduce((s,p)=>s+(p.project_activities||[]).filter(a=>Number(a.planned_quantity)>0&&((Number(a.october_qty)+Number(a.november_qty)+Number(a.december_qty))/Number(a.planned_quantity)>=.99999)).length,0);
+  $('statUpdated').textContent=new Date().toLocaleTimeString();
+}
+
+function renderProjects(){
+  const q=$('searchProject').value.toLowerCase();
+  const filter=$('statusFilter').value;
+
+  let list=projects.filter(p=>
+    (`${p.name} ${p.fund_source||''}`.toLowerCase().includes(q))&&
+    (filter==='all'||(filter==='complete'?Number(p.total_weighted)>=99.999:Number(p.total_weighted)<99.999))
+  );
+
+  $('projectsBody').innerHTML=list.map(p=>{
+    const a=p.project_activities||[];
+    const v=a.length?a.reduce((s,x)=>s+(Number(x.planned_quantity)>0?Math.min(100,(Number(x.october_qty)+Number(x.november_qty)+Number(x.december_qty))/Number(x.planned_quantity)*100)*Number(x.weight_percent)/100:0),0):Number(p.total_weighted||0);
+
+    return `<tr>
+      <td class="left"><b>${esc(p.name)}</b><br><span class="small">${esc(p.notes||'')}</span></td>
+      <td>${esc(p.fund_source||'—')}</td>
+      <td>${esc(p.reporting_date||'—')}</td>
+      <td>${a.length}</td>
+      <td><b>${fmt(v)}</b><div class="bar"><span style="width:${Math.max(0,Math.min(100,v))}%"></span></div></td>
+      <td>${esc(p.updated_by_name||'—')}</td>
+      <td><button class="light" onclick="openProject('${p.id}')">Open sheet</button></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="7">No projects found.</td></tr>';
+}
+
+$('searchProject').oninput=renderProjects;
+$('statusFilter').onchange=renderProjects;
+$('refreshBtn').onclick=loadProjects;
+
+$('newProjectBtn').onclick=async()=>{
+  const name=prompt('Enter project/site name:');
+  if(!name?.trim())return;
+
+  const {data,error}=await sb.from('projects').insert({
+    name:name.trim(),
+    fund_source:'GAA 2026 - SEP',
+    reporting_date:new Date().toISOString().slice(0,10),
+    notes:'',
+    created_by:user.id,
+    updated_by_name:profile.display_name||user.email
+  }).select().single();
+
+  if(error){alert(error.message);return}
+
+  const rows=DEFAULT_ACTIVITIES.map((a,i)=>({
+    project_id:data.id,sort_order:i+1,activity_name:a.name,
+    planned_quantity:a.plan,weight_percent:a.weight,
+    october_qty:a.oct,november_qty:a.nov,december_qty:a.dec
+  }));
+
+  const r=await sb.from('project_activities').insert(rows);
+
+  if(r.error){alert('Project created but activities failed: '+r.error.message);return}
+
+  await logEvent('project_created',data.id,{name});
+  await loadProjects();
+  openProject(data.id);
+};
+
+window.openProject=async id=>{
+  if(dirty&&!confirm('Discard unsaved changes and open another project?'))return;
+
+  const {data,error}=await sb.from('projects')
+    .select('*,project_activities(*)')
+    .eq('id',id).single();
+
+  if(error){alert(error.message);return}
+
+  currentProject=data;
+  activities=(data.project_activities||[])
+    .sort((a,b)=>a.sort_order-b.sort_order)
+    .map(a=>({
+      id:a.id,name:a.activity_name,plan:Number(a.planned_quantity),
+      weight:Number(a.weight_percent),oct:Number(a.october_qty),
+      nov:Number(a.november_qty),dec:Number(a.december_qty)
+    }));
+
+  $('editorTitle').textContent=data.name;
+  $('editorSub').textContent=`Fund source: ${data.fund_source||'—'} · Reporting date: ${data.reporting_date||'—'}`;
+  $('projectName').value=data.name;
+  $('fundSource').value=data.fund_source||'';
+  $('reportDate').value=data.reporting_date||'';
+  $('projectNotes').value=data.notes||'';
+  $('projectLastEdit').textContent=data.updated_at?new Date(data.updated_at).toLocaleString():'—';
+
+  dirty=false;
+  show('appPanel',false);
+  show('editorPanel');
+  renderMonitor();
+  $('liveStatus').textContent='Connecting…';
+  await logEvent('project_viewed',id,{});
+  subscribeProject(id);
+};
+
+function subscribeProject(id){
+  if(channel)sb.removeChannel(channel);
+
+  channel=sb.channel('project-'+id)
+    .on('postgres_changes',{
+      event:'*',schema:'public',table:'project_activities',
+      filter:`project_id=eq.${id}`
+    },async()=>{
+      if(dirty){
+        $('liveStatus').textContent='Remote update (local edits pending)';
+        return;
+      }
+
+      const {data}=await sb.from('project_activities')
+        .select('*').eq('project_id',id).order('sort_order');
+
+      if(data){
+        activities=data.map(a=>({
+          id:a.id,name:a.activity_name,plan:Number(a.planned_quantity),
+          weight:Number(a.weight_percent),oct:Number(a.october_qty),
+          nov:Number(a.november_qty),dec:Number(a.december_qty)
+        }));
+        renderMonitor();
+        $('liveStatus').textContent='Live · synced';
+      }
+    })
+    .subscribe(status=>{
+      if(status==='SUBSCRIBED')$('liveStatus').textContent='Live · connected';
+    });
+}
+
+$('backBtn').onclick=async()=>{
+  if(dirty&&!confirm('You have unsaved changes. Leave without saving?'))return;
+  dirty=false;
+  if(channel){await sb.removeChannel(channel);channel=null}
+  show('editorPanel',false);
+  show('appPanel');
+  await loadProjects();
+};
+
+function renderMonitor(){
+  const editable=canEdit();
+
+  $('monitorBody').innerHTML=activities.map((a,i)=>`<tr>
+    <td>${i+1}</td>
+    <td class="left">${editable?`<input class="text" data-i="${i}" data-k="name" value="${esc(a.name)}">`:esc(a.name)}</td>
+    <td><input data-i="${i}" data-k="plan" type="number" min="0" step="any" value="${a.plan}" ${editable?'':'disabled'}></td>
+    <td><input data-i="${i}" data-k="weight" type="number" min="0" max="100" step="any" value="${a.weight}" ${editable?'':'disabled'}></td>
+    <td><input data-i="${i}" data-k="oct" type="number" min="0" step="any" value="${a.oct}" ${editable?'':'disabled'}></td>
+    <td><input data-i="${i}" data-k="nov" type="number" min="0" step="any" value="${a.nov}" ${editable?'':'disabled'}></td>
+    <td><input data-i="${i}" data-k="dec" type="number" min="0" step="any" value="${a.dec}" ${editable?'':'disabled'}></td>
+    <td>${totalActivity(a)}</td><td>${fmt(pct(a))}</td><td>${fmt(weighted(a))}</td>
+  </tr>`).join('');
+
+  $('monitorBody').querySelectorAll('input').forEach(el=>el.onchange=()=>{
+    const a=activities[Number(el.dataset.i)],k=el.dataset.k;
+    a[k]=k==='name'?el.value:Math.max(0,Number(el.value)||0);
+    dirty=true;
+    $('saveStatus').textContent='Unsaved changes';
+    renderMonitor();
+  });
+
+  const t=totals();
+  $('weightTotal').textContent=fmt(t.weight);
+  $('qtyTotal').textContent=t.qty;
+  $('weightedTotal').textContent=fmt(t.weighted);
+  $('projectTotal').textContent=fmt(t.weighted);
+  $('projectDone').textContent=`${t.done} / ${activities.length}`;
+  $('saveBtn').disabled=!editable;
+}
+
+$('saveBtn').onclick=async()=>{
+  if(!canEdit()||!currentProject)return;
+
+  const weight=totals().weight;
+  if(Math.abs(weight-100)>0.01&&!confirm(`Activity weights total ${weight.toFixed(2)}%, not 100%. Save anyway?`))return;
+
+  const {error:pe}=await sb.from('projects').update({
+    name:$('projectName').value.trim(),
+    fund_source:$('fundSource').value.trim(),
+    reporting_date:$('reportDate').value||null,
+    notes:$('projectNotes').value,
+    updated_by_name:profile.display_name||user.email
+  }).eq('id',currentProject.id);
+
+  if(pe){alert('Project metadata save failed: '+pe.message);return}
+
+  for(const a of activities){
+    const {error}=await sb.from('project_activities').update({
+      activity_name:a.name,
+      planned_quantity:a.plan,
+      weight_percent:a.weight,
+      october_qty:a.oct,
+      november_qty:a.nov,
+      december_qty:a.dec
+    }).eq('id',a.id);
+
+    if(error){alert('Activity save failed: '+error.message);return}
+  }
+
+  await logEvent('project_saved',currentProject.id,{
+    project_name:$('projectName').value,activity_count:activities.length
+  });
+
+  dirty=false;
+  $('saveStatus').textContent='Saved successfully at '+new Date().toLocaleTimeString();
+  await loadProjects();
+  $('projectLastEdit').textContent=new Date().toLocaleString();
+};
+
+$('exportXlsxBtn').onclick=()=>{
+  if(!window.XLSX){alert('Excel library unavailable');return}
+
+  const rows=[
+    ['ZAMBOANGA DEL NORTE ELECTRIC COOPERATIVE, INC.'],
+    ['SEP Accomplishment Report'],['Distribution Lines'],
+    ['Fund Source',$('fundSource').value],
+    ['Project',$('projectName').value],
+    ['As of',$('reportDate').value],[],
+    ['Item Number','Activity','As Plan (Updated Quantity)','Weight per Activity','October','November','December','To Date','Accomplishment per activity (%)','Weighted percent'],
+    ...activities.map((a,i)=>[i+1,a.name,a.plan,a.weight/100,a.oct,a.nov,a.dec,totalActivity(a),pct(a)/100,weighted(a)/100]),
+    ['','','','','','','','','% Total Accomplished',totals().weighted/100]
+  ];
+
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:12},{wch:32},{wch:22},{wch:18},{wch:12},{wch:12},{wch:12},{wch:12},{wch:24},{wch:16}];
+
+  activities.forEach((a,i)=>{
+    const r=9+i;
+    if(ws['D'+r])ws['D'+r].z='0%';
+    if(ws['I'+r])ws['I'+r].z='0.00%';
+    if(ws['J'+r])ws['J'+r].z='0.00%';
+  });
+
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'SEP Monitoring');
+  XLSX.writeFile(wb,`ZANECO_SEP_${($('projectName').value||'Project').replace(/[^a-z0-9]+/gi,'_')}_${$('reportDate').value||'report'}.xlsx`);
+  logEvent('report_downloaded',currentProject?.id,{format:'xlsx'});
+};
+
+async function loadAudit(){
+  if(!isAdmin())return;
+
+  const {data,error}=await sb.from('activity_events')
+    .select('id,action,project_id,actor_id,details,created_at,profiles:actor_id(display_name,email)')
+    .order('created_at',{ascending:false}).limit(300);
+
+  if(error){$('auditList').textContent='Could not load audit log: '+error.message;return}
+
+  $('auditList').innerHTML=(data||[]).map(e=>`<div class="activity-item">
+    <b>${esc(e.action)}</b> · ${esc(e.profiles?.display_name||e.profiles?.email||e.actor_id)}
+    <div class="small">${new Date(e.created_at).toLocaleString()} · Project ${esc(e.project_id||'—')} · ${esc(JSON.stringify(e.details||{}))}</div>
+  </div>`).join('')||'No events recorded yet.';
+}
+
+$('exportAuditBtn').onclick=async()=>{
+  const {data,error}=await sb.from('activity_events')
+    .select('*').order('created_at',{ascending:false}).limit(5000);
+
+  if(error){alert(error.message);return}
+
+  const csv=['created_at,actor_id,action,project_id,details',...(data||[]).map(e=>
+    [e.created_at,e.actor_id,e.action,e.project_id,JSON.stringify(e.details||{})]
+      .map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')
+  )].join('\n');
+
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='ZANECO_activity_log.csv';
+  a.click();
+  logEvent('audit_downloaded',null,{format:'csv'});
+};
+
+async function loadRoles(){
+  if(!isAdmin())return;
+
+  const {data,error}=await sb.from('profiles')
+    .select('id,role,updated_at').order('updated_at',{ascending:false});
+
+  if(error){
+    $('rolesBody').innerHTML=`<tr><td colspan="3">${esc(error.message)}</td></tr>`;
+    return;
+  }
+
+  $('rolesBody').innerHTML=(data||[]).map(p=>`<tr>
+    <td>${esc(p.id)}</td><td>${esc(p.role)}</td>
+    <td>${p.updated_at?new Date(p.updated_at).toLocaleString():'—'}</td>
+  </tr>`).join('');
+}
+
+$('roleForm').onsubmit=async e=>{
+  e.preventDefault();
+  if(!isAdmin())return;
+
+  const email=$('roleEmail').value.trim().toLowerCase();
+  const role=$('roleValue').value;
+
+  const {data,error}=await sb.rpc('admin_set_role_by_email',{
+    target_email:email,new_role:role
+  });
+
+  $('roleMessage').textContent=error?'Error: '+error.message:(data||'Role updated.');
+
+  if(!error){
+    await loadRoles();
+    await logEvent('role_changed',null,{email,role});
+  }
+};
+
+window.addEventListener('beforeunload',e=>{
+  if(dirty){e.preventDefault();e.returnValue=''}
+});
+
+init();
 </script>
-</body></html>
+</body>
+</html>
